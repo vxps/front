@@ -1,0 +1,32 @@
+.btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: all 0.2s;
+  }
+  
+  .btn-primary {
+	background-color: var(--color-primary);
+	color: white;
+  }
+  
+  .btn-primary:hover:not(.btn-disabled) {
+	background-color: var(--color-primary-hover);
+  }
+  
+  .btn-secondary {
+	background-color: var(--color-bg-tertiary);
+	color: var(--color-text-primary);
+  }
+  
+  .btn-icon {
+	padding: 6px;
+	background: transparent;
+  }
+  
+  .btn-disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+  }
