@@ -26,3 +26,10 @@ export interface Message {
 	credentials: string;
 	scope: 'GIGACHAT_API_PERS' | 'GIGACHAT_API_B2B' | 'GIGACHAT_API_CORP';
   }
+  
+  export interface ChatMessage {
+	id: number;
+	role: 'user' | 'assistant';
+	content: string;
+	timestamp: Date;
+  }

@@ -5,6 +5,8 @@ import { ChatWindow } from './components/chat/ChatWindow';
 import { SettingsPanel } from './components/settings/SettingsPanel';
 import { AuthForm } from './components/auth/AuthForm';
 import { AuthData, AppSettings } from './types';
+import './styles/theme.css';
+import './App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,10 +38,6 @@ function App() {
     console.log('Select chat:', id);
   };
 
-  const handleSendMessage = (text: string) => {
-    console.log('Send message:', text);
-  };
-
   const handleSaveSettings = (settings: AppSettings) => {
     console.log('Save settings:', settings);
     if (settings.theme !== theme) {
@@ -63,7 +61,6 @@ function App() {
         }
       >
         <ChatWindow
-          onSendMessage={handleSendMessage}
           onOpenSettings={() => setIsSettingsOpen(true)}
         />
       </AppLayout>
