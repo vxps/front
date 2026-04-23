@@ -1,4 +1,4 @@
-## 📦 Стек технологий
+##  Стек технологий
 
 - **Фреймворк**: React 18 + TypeScript
 - **State Management**: Zustand + persist middleware
