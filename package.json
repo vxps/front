@@ -3,26 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "axios": "^1.15.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-error-boundary": "^6.1.1",
     "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.14.2",
     "react-scripts": "5.0.1",
+    "react-syntax-highlighter": "^16.1.1",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^5.0.12"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "proxy": "node proxy/server.js",
+    "dev": "concurrently \"npm start\" \"npm run proxy\"",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "build": "react-scripts build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": [
@@ -41,5 +48,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.14",
+    "source-map-explorer": "^2.5.3"
   }
 }

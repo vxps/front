@@ -1,59 +1,73 @@
 import React, { useState } from 'react';
-import { Button } from '../ui/Button';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { AuthData } from '../../types';
-import './AuthForm.css';
+import styles from './AuthForm.module.css';
 
 interface AuthFormProps {
   onLogin: (data: AuthData) => void;
 }
 
 export const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
-  const [credentials, setCredentials] = useState('');
+  const [authKey, setAuthKey] = useState('');
   const [scope, setScope] = useState<AuthData['scope']>('GIGACHAT_API_PERS');
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!credentials.trim()) {
-      setError('Поле Credentials не может быть пустым');
+    if (!authKey.trim()) {
+      setError('Введите Authorization Key');
       return;
     }
     
-    onLogin({ credentials, scope });
+    localStorage.setItem('authKey', authKey.trim());
+    localStorage.setItem('scope', scope);
+    
+    onLogin({ credentials: authKey.trim(), scope });
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form-wrapper">
-        <div className="auth-logo">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="currentColor">
-            <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4zm0 52C18.745 56 8 45.255 8 32S18.745 8 32 8s24 10.745 24 24-10.745 24-24 24z"/>
+    <div className={styles.authContainer}>
+      <div className={styles.authFormWrapper}>
+        <div className={styles.authLogo}>
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="32" cy="32" r="28"/>
+            <circle cx="32" cy="32" r="12" fill="currentColor" stroke="none"/>
           </svg>
           <h1>GigaChat</h1>
         </div>
         
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="auth-group">
-            <label className="auth-label">Credentials</label>
+        <div className={styles.authInfo}>
+          <p>
+            Вставьте <strong>Authorization Key</strong> из{' '}
+            <a href="https://developers.sber.ru/studio" target="_blank" rel="noreferrer">
+              GigaChat Studio
+            </a>
+          </p>
+          <p className={styles.authHint}>
+            Настройки API → Получить ключ → скопируйте значение
+          </p>
+        </div>
+        
+        <form className={styles.authForm} onSubmit={handleSubmit}>
+          <div className={styles.authGroup}>
+            <label className={styles.authLabel}>Authorization Key</label>
             <input
               type="password"
-              className="auth-input"
-              value={credentials}
+              className={styles.authInput}
+              value={authKey}
               onChange={(e) => {
-                setCredentials(e.target.value);
+                setAuthKey(e.target.value);
                 setError('');
               }}
-              placeholder="Введите Base64 строку"
+              placeholder="AUTHKEY==..."
             />
-            {error && <ErrorMessage message={error} />}
           </div>
           
-          <div className="auth-group">
-            <label className="auth-label">Scope</label>
-            <div className="auth-radio-group">
-              <label className="auth-radio">
+          <div className={styles.authGroup}>
+            <label className={styles.authLabel}>Scope</label>
+            <div className={styles.authRadioGroup}>
+              <label className={styles.authRadio}>
                 <input
                   type="radio"
                   name="scope"
@@ -63,34 +77,14 @@ export const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
                 />
                 <span>Персональный</span>
               </label>
-              
-              <label className="auth-radio">
-                <input
-                  type="radio"
-                  name="scope"
-                  value="GIGACHAT_API_B2B"
-                  checked={scope === 'GIGACHAT_API_B2B'}
-                  onChange={(e) => setScope(e.target.value as AuthData['scope'])}
-                />
-                <span>B2B</span>
-              </label>
-              
-              <label className="auth-radio">
-                <input
-                  type="radio"
-                  name="scope"
-                  value="GIGACHAT_API_CORP"
-                  checked={scope === 'GIGACHAT_API_CORP'}
-                  onChange={(e) => setScope(e.target.value as AuthData['scope'])}
-                />
-                <span>Корпоративный</span>
-              </label>
             </div>
           </div>
           
-          <Button type="submit" variant="primary" className="auth-submit">
+          {error && <ErrorMessage message={error} />}
+          
+          <button type="submit" className={styles.authSubmit}>
             Войти
-          </Button>
+          </button>
         </form>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Slider } from '../ui/Slider';
 import { Toggle } from '../ui/Toggle';
-import './SettingsPanel.css';
+import './SettingsPanel.module.css';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -35,22 +35,22 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose, o
   };
 
   return (
-    <div className="settings-panel-overlay" onClick={onClose}>
-      <div className="settings-panel" onClick={(e) => e.stopPropagation()}>
-        <header className="settings-header">
+    <div className="settingsPanelOverlay" onClick={onClose}>
+      <div className="settingsPanel" onClick={(e) => e.stopPropagation()}>
+        <header className="settingsHeader">
           <h2>Настройки</h2>
-          <button className="settings-close" onClick={onClose}>
+          <button className="settingsClose" onClick={onClose}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
               <path d="M4.293 4.293a1 1 0 0 1 1.414 0L10 8.586l4.293-4.293a1 1 0 1 1 1.414 1.414L11.414 10l4.293 4.293a1 1 0 0 1-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L8.586 10 4.293 5.707a1 1 0 0 1 0-1.414z"/>
             </svg>
           </button>
         </header>
         
-        <div className="settings-content">
-          <div className="settings-group">
-            <label className="settings-label">Модель</label>
+        <div className="settingsContent">
+          <div className="settingsGroup">
+            <label className="settingsLabel">Модель</label>
             <select 
-              className="settings-select"
+              className="settingsSelect"
               value={model}
               onChange={(e) => setModel(e.target.value)}
             >
@@ -79,11 +79,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose, o
             step={0.05}
           />
           
-          <div className="settings-group">
-            <label className="settings-label">Max Tokens</label>
+          <div className="settingsGroup">
+            <label className="settingsLabel">Max Tokens</label>
             <input
               type="number"
-              className="settings-input"
+              className="settingsInput"
               value={maxTokens}
               onChange={(e) => setMaxTokens(parseInt(e.target.value))}
               min={1}
@@ -91,10 +91,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose, o
             />
           </div>
           
-          <div className="settings-group">
-            <label className="settings-label">System Prompt</label>
+          <div className="settingsGroup">
+            <label className="settingsLabel">System Prompt</label>
             <textarea
-              className="settings-textarea"
+              className="settingsTextarea"
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               placeholder="Введите системный промпт..."
@@ -105,11 +105,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose, o
           <Toggle
             label="Тёмная тема"
             checked={theme === 'dark'}
-            onChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+            onChange={(checked: boolean) => setTheme(checked ? 'dark' : 'light')}
           />
         </div>
         
-        <footer className="settings-footer">
+        <footer className="settingsFooter">
           <Button variant="secondary" onClick={handleReset}>
             Сбросить
           </Button>
@@ -121,3 +121,5 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose, o
     </div>
   );
 };
+
+export default SettingsPanel;

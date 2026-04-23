@@ -1,16 +1,31 @@
 export interface Message {
-	id: number;
+	id: string;
+	role: 'user' | 'assistant' | 'system';
+	content: string;
+	timestamp: number;
+  }
+  
+  // Для отображения в компонентах
+  export interface MessageDisplay {
+	id: string;
 	text: string;
 	sender: 'user' | 'assistant';
 	time: string;
   }
   
   export interface Chat {
-	id: number;
+	id: string;
 	title: string;
-	lastMessage: string;
-	date: string;
-	isActive?: boolean;
+	messages: Message[];
+	createdAt: number;
+	updatedAt: number;
+  }
+  
+  export interface ChatState {
+	chats: Chat[];
+	activeChatId: string | null;
+	isLoading: boolean;
+	error: string | null;
   }
   
   export interface AppSettings {
@@ -25,11 +40,4 @@ export interface Message {
   export interface AuthData {
 	credentials: string;
 	scope: 'GIGACHAT_API_PERS' | 'GIGACHAT_API_B2B' | 'GIGACHAT_API_CORP';
-  }
-  
-  export interface ChatMessage {
-	id: number;
-	role: 'user' | 'assistant';
-	content: string;
-	timestamp: Date;
   }

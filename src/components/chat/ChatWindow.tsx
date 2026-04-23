@@ -1,87 +1,180 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MessageList } from './MessageList';
 import { InputArea } from './InputArea';
 import { TypingIndicator } from './TypingIndicator';
-import { ChatMessage } from '../../types';
-import './ChatWindow.css';
+import { ErrorBoundary } from '../error/ErrorBoundary';
+import { useChatStore } from '../../store/chatStore';
+import { Message } from '../../types';
+import styles from './ChatWindow.module.css';
 
 interface ChatWindowProps {
   onOpenSettings: () => void;
 }
 
-// Моковые ответы ассистента
-const mockResponses = [
-  "Отличный вопрос! Давайте разберемся.",
-  "Я понял вашу задачу. Вот что я думаю...",
-  "Интересно! Позвольте мне помочь вам с этим.",
-  "Хорошо, вот мое решение:\n```python\ndef solution():\n    return 'Результат'\n```",
-  "Спасибо за сообщение! Я обрабатываю ваш запрос.",
-];
-
 export const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 1,
-      role: 'assistant',
-      content: '**Здравствуйте!** Чем могу помочь?',
-      timestamp: new Date(),
-    },
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { 
+    activeChatId, 
+    getActiveChat, 
+    addMessage, 
+    updateMessage, 
+    setLoading, 
+    isLoading
+  } = useChatStore();
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chat = getActiveChat();
 
-  // Автоскролл к последнему сообщению
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  }, [chat?.messages, isLoading]);
 
-  const handleSendMessage = (text: string) => {
-    // Добавляем сообщение пользователя
-    const userMessage: ChatMessage = {
-      id: Date.now(),
+  const handleSendMessage = async (text: string) => {
+    if (!activeChatId) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
       role: 'user',
       content: text,
-      timestamp: new Date(),
+      timestamp: Date.now(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
+    addMessage(activeChatId, userMessage);
+    setLoading(true);
 
-    setTimeout(() => {
-      const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
+    const assistantMessageId = (Date.now() + 1).toString();
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: Date.now(),
+    };
+    addMessage(activeChatId, assistantMessage);
+
+    try {
+      const credentials = localStorage.getItem('credentials');
+      const response = await fetchGigaChatResponse(
+        chat?.messages || [],
+        userMessage,
+        credentials || ''
+      );
       
-      const assistantMessage: ChatMessage = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: randomResponse,
-        timestamp: new Date(),
-      };
+      updateMessage(activeChatId, assistantMessageId, response);
+    } catch (err: any) {
+      console.error('API Error:', err);
+      updateMessage(activeChatId, assistantMessageId, `Ошибка: ${err.message || 'Не удалось получить ответ'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      setMessages((prev) => [...prev, assistantMessage]);
-      setIsLoading(false);
-    }, 1000 + Math.random() * 1000);
+  const handleStopGeneration = () => {
+    setLoading(false);
   };
 
   return (
-    <div className="chat-window">
-      <header className="chat-header">
-        <div className="chat-header-info">
-          <h1 className="chat-title">Помощь с кодом на Python #1234</h1>
+    <div className={styles.chatWindow}>
+      <header className={styles.chatHeader}>
+        <div className={styles.chatHeaderInfo}>
+          <h1 className={styles.chatTitle}>{chat?.title || 'Чат'}</h1>
         </div>
-        <button className="settings-btn" onClick={onOpenSettings}>
+        <button className={styles.settingsBtn} onClick={onOpenSettings}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM10 12a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM10 18a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
           </svg>
         </button>
       </header>
       
-      <MessageList messages={messages} />
+      <div className={styles.messagesContainer}>
+        {chat ? (
+          <ErrorBoundary fallback={<div className={styles.errorFallback}>Ошибка загрузки сообщений</div>}>
+            <MessageList messages={chat.messages} />
+          </ErrorBoundary>
+        ) : (
+          <div className={styles.emptyState}>
+            <h2>Выберите или создайте чат</h2>
+            <p>Нажмите «Новый чат» чтобы начать диалог</p>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
       
-      <TypingIndicator isVisible={isLoading} />
+      <div className={styles.typingContainer}>
+        <TypingIndicator isVisible={isLoading} />
+      </div>
       
-      <div ref={messagesEndRef} />
-      
-      <InputArea onSend={handleSendMessage} isLoading={isLoading} />
+      <div className={styles.inputContainer}>
+        <InputArea 
+          onSend={handleSendMessage} 
+          isLoading={isLoading}
+          onStop={handleStopGeneration}
+        />
+      </div>
     </div>
   );
 };
+
+async function fetchGigaChatResponse(
+  messages: Message[],
+  newUserMessage: Message,
+  credentials: string
+): Promise<string> {
+  if (!credentials) {
+    return 'Ошибка: credentials не найдены. Войдите в приложение и введите ключ авторизации.';
+  }
+
+  try {
+    const tokenResponse = await fetch('http://localhost:3001/api/oauth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': credentials,
+        'RqUID': generateRqUID(),
+      },
+      body: 'scope=GIGACHAT_API_PERS',
+    });
+
+    if (!tokenResponse.ok) {
+      const errorData = await tokenResponse.json().catch(() => ({}));
+      throw new Error(`Token error: ${tokenResponse.status} - ${errorData.error || 'Unknown'}`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+
+    const chatResponse = await fetch('http://localhost:3001/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': accessToken,
+      },
+      body: JSON.stringify({
+        model: 'GigaChat',
+        messages: [
+          ...messages.map(m => ({ role: m.role, content: m.content })),
+          { role: newUserMessage.role, content: newUserMessage.content }
+        ],
+        stream: false,
+      }),
+    });
+
+    if (!chatResponse.ok) {
+      const errorData = await chatResponse.json().catch(() => ({}));
+      throw new Error(`Chat error: ${chatResponse.status} - ${errorData.error || 'Unknown'}`);
+    }
+
+    const data = await chatResponse.json();
+    return data.choices[0].message.content;
+
+  } catch (error: any) {
+    console.error('GigaChat API Error:', error);
+    throw error;
+  }
+}
+
+function generateRqUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : ((r & 0x3) | 0x8);
+    return v.toString(16);
+  });
+}

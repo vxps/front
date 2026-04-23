@@ -1,5 +1,5 @@
 import React from 'react';
-import './Toggle.css';
+import './Toggle.module.css';
 
 interface ToggleProps {
   checked: boolean;
@@ -10,14 +10,14 @@ interface ToggleProps {
 export const Toggle: React.FC<ToggleProps> = ({ checked, onChange, label }) => {
   return (
     <label className="toggle">
-      {label && <span className="toggle-label">{label}</span>}
+      {label && <span className="toggleLabel">{label}</span>}
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="toggle-input"
+        className="toggleInput"
       />
-      <span className="toggle-slider"></span>
+      <span className="toggleSlider"></span>
     </label>
   );
 };

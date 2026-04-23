@@ -5,16 +5,16 @@
 	cursor: pointer;
   }
   
-  .toggle-label {
+  .toggleLabel {
 	font-size: 14px;
 	color: var(--color-text-primary);
   }
   
-  .toggle-input {
+  .toggleInput {
 	display: none;
   }
   
-  .toggle-slider {
+  .toggleSlider {
 	width: 44px;
 	height: 24px;
 	background-color: var(--color-bg-tertiary);
@@ -23,7 +23,7 @@
 	transition: background-color 0.3s;
   }
   
-  .toggle-slider::before {
+  .toggleSlider::before {
 	content: '';
 	position: absolute;
 	width: 20px;
@@ -36,10 +36,10 @@
 	box-shadow: 0 2px 4px var(--color-shadow);
   }
   
-  .toggle-input:checked + .toggle-slider {
+  .toggleInput:checked + .toggleSlider {
 	background-color: var(--color-primary);
   }
   
-  .toggle-input:checked + .toggle-slider::before {
+  .toggleInput:checked + .toggleSlider::before {
 	transform: translateX(20px);
   }

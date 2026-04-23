@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './AppLayout.css';
+import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -10,9 +10,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, sidebar }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="app-layout">
+    <div className={styles.appLayout}>
       <button 
-        className="burger-btn"
+        className={styles.burgerBtn}
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         aria-label="Toggle menu"
       >
@@ -21,16 +21,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, sidebar }) => {
         </svg>
       </button>
       
-      <aside className={`sidebar ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
         {sidebar}
       </aside>
       
-      <main className="chat-area" onClick={() => setIsSidebarOpen(false)}>
+      <main className={styles.chatArea} onClick={() => setIsSidebarOpen(false)}>
         {children}
       </main>
       
       {isSidebarOpen && (
-        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
+        <div className={styles.sidebarOverlay} onClick={() => setIsSidebarOpen(false)}></div>
       )}
     </div>
   );

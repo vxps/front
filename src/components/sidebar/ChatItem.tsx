@@ -1,44 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Chat } from '../../types';
-import './ChatItem.css';
+import styles from './ChatItem.module.css';
 
 interface ChatItemProps {
   chat: Chat;
-  onSelect: (id: number) => void;
+  isActive: boolean;
+  onSelect: (id: string) => void;
+  onDelete: (e: React.MouseEvent) => void;
 }
 
-export const ChatItem: React.FC<ChatItemProps> = ({ chat, onSelect }) => {
-  const [showActions, setShowActions] = useState(false);
+export const ChatItem = React.memo<ChatItemProps>(({ chat, isActive, onSelect, onDelete }) => {
+  const formatLastMessage = (messages: Chat['messages']) => {
+    if (messages.length === 0) return 'Нет сообщений';
+    const last = messages[messages.length - 1];
+    return last.content.substring(0, 30) + (last.content.length > 30 ? '...' : '');
+  };
+
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    if (days === 0) {
+      return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    } else if (days === 1) {
+      return 'Вчера';
+    } else if (days < 7) {
+      return date.toLocaleDateString('ru-RU', { weekday: 'long' });
+    } else {
+      return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'numeric' });
+    }
+  };
+
+  const handleClick = () => {
+    onSelect(chat.id);
+  };
 
   return (
     <div 
-      className={`chat-item ${chat.isActive ? 'chat-item-active' : ''}`}
-      onClick={() => onSelect(chat.id)}
-      onMouseEnter={() => setShowActions(true)}
-      onMouseLeave={() => setShowActions(false)}
+      className={`${styles.chatItem} ${isActive ? styles.chatItemActive : ''}`}
+      onClick={handleClick}
     >
-      <div className="chat-item-content">
-        <div className="chat-item-title">{chat.title}</div>
-        <div className="chat-item-meta">
-          <span className="chat-item-date">{chat.date}</span>
+      <div className={styles.chatItemContent}>
+        <div className={styles.chatItemTitle}>{chat.title}</div>
+        <div className={styles.chatItemMeta}>
+          <span className={styles.chatItemLastMessage}>
+            {formatLastMessage(chat.messages)}
+          </span>
+          <span className={styles.chatItemDate}>{formatDate(chat.updatedAt)}</span>
         </div>
       </div>
       
-      {showActions && (
-        <div className="chat-item-actions">
-          <button className="chat-item-action-btn" title="Редактировать" onClick={(e) => e.stopPropagation()}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-            </svg>
-          </button>
-          <button className="chat-item-action-btn" title="Удалить" onClick={(e) => e.stopPropagation()}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-            </svg>
-          </button>
-        </div>
-      )}
+      <button 
+        className={styles.chatItemDeleteBtn} 
+        onClick={onDelete}
+        title="Удалить чат"
+        type="button"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+        </svg>
+      </button>
     </div>
   );
-};
+});
+
+ChatItem.displayName = 'ChatItem';

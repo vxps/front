@@ -1,10 +1,10 @@
 import React from 'react';
-import './Button.css';
+import './Button.module.css';
 
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'icon';
+  variant?: 'primary' | 'secondary' | 'icon' | 'danger';
   disabled?: boolean;
   type?: 'button' | 'submit';
   className?: string;

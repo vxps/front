@@ -1,0 +1,146 @@
+.inputArea {
+	padding: 20px 24px;
+	border-top: 1px solid var(--color-border);
+	background-color: var(--color-bg-primary);
+  }
+  
+  .inputWrapper {
+	display: flex;
+	align-items: flex-end;
+	gap: 10px;
+	max-width: 800px;
+	margin: 0 auto;
+	width: 100%;
+  }
+  
+  .attachBtn {
+	padding: 10px;
+	background: transparent;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	color: var(--color-text-secondary);
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+  }
+  
+  .attachBtn:hover:not(:disabled) {
+	background-color: var(--color-bg-tertiary);
+	color: var(--color-primary);
+  }
+  
+  .attachBtn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+  }
+  
+  .inputTextarea {
+	flex: 1;
+	padding: 14px 18px;
+	border: 1px solid var(--color-border);
+	border-radius: 14px;
+	background-color: var(--color-bg-secondary);
+	color: var(--color-text-primary);
+	font-size: 15px;
+	font-family: inherit;
+	resize: none;
+	outline: none;
+	max-height: 150px;
+	min-height: 52px;
+	line-height: 1.5;
+	transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .inputTextarea:focus {
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.1);
+  }
+  
+  .inputTextarea:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+  }
+  
+  .inputTextarea::placeholder {
+	color: var(--color-text-secondary);
+  }
+  
+  .sendButton,
+  .stopButton {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 12px 18px;
+	border-radius: 12px;
+	font-weight: 500;
+	transition: all 0.2s;
+  }
+  
+  .sendButton {
+	background-color: var(--color-primary);
+	color: white;
+	border: none;
+  }
+  
+  .sendButton:hover:not(:disabled) {
+	background-color: var(--color-primary-hover);
+	transform: translateY(-1px);
+  }
+  
+  .sendButton:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	transform: none;
+  }
+  
+  .stopButton {
+	background-color: var(--color-error);
+	color: white;
+	border: none;
+	animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+	0%, 100% {
+	  box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.4);
+	}
+	50% {
+	  box-shadow: 0 0 0 8px rgba(255, 77, 79, 0);
+	}
+  }
+  
+  @media (max-width: 768px) {
+	.inputArea {
+	  padding: 14px 16px;
+	}
+	
+	.inputWrapper {
+	  gap: 6px;
+	}
+	
+	.inputTextarea {
+	  padding: 12px 14px;
+	  min-height: 48px;
+	  font-size: 14px;
+	}
+	
+	.sendButton,
+	.stopButton {
+	  padding: 10px 14px;
+	}
+	
+	.sendButton span,
+	.stopButton span {
+	  display: none;
+	}
+  }
+  
+  @media (max-width: 480px) {
+	.attachBtn {
+	  display: none;
+	}
+  }

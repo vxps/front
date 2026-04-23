@@ -4,7 +4,12 @@
 	border-radius: 6px;
 	cursor: pointer;
 	font-size: 14px;
+	font-weight: 500;
 	transition: all 0.2s;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
   }
   
   .btn-primary {
@@ -21,9 +26,27 @@
 	color: var(--color-text-primary);
   }
   
+  .btn-secondary:hover:not(.btn-disabled) {
+	background-color: var(--color-border);
+  }
+  
+  .btn-danger {
+	background-color: var(--color-error);
+	color: white;
+  }
+  
+  .btn-danger:hover:not(.btn-disabled) {
+	background-color: #d9363e;
+  }
+  
   .btn-icon {
 	padding: 6px;
 	background: transparent;
+	border-radius: 4px;
+  }
+  
+  .btn-icon:hover:not(.btn-disabled) {
+	background-color: var(--color-bg-tertiary);
   }
   
   .btn-disabled {

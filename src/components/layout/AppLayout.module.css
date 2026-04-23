@@ -1,25 +1,25 @@
-.app-layout {
+.appLayout {
 	display: flex;
 	height: 100vh;
 	position: relative;
   }
   
-  .burger-btn {
+  .burgerBtn {
 	display: none;
 	position: fixed;
 	top: 16px;
 	left: 16px;
 	z-index: 1001;
-	padding: 8px;
+	padding: 10px;
 	background-color: var(--color-bg-secondary);
 	border: none;
-	border-radius: 6px;
+	border-radius: 8px;
 	cursor: pointer;
 	color: var(--color-text-primary);
 	box-shadow: 0 2px 8px var(--color-shadow);
   }
   
-  .burger-btn:hover {
+  .burgerBtn:hover {
 	background-color: var(--color-bg-tertiary);
   }
   
@@ -33,7 +33,7 @@
 	transition: transform 0.3s;
   }
   
-  .chat-area {
+  .chatArea {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -41,7 +41,7 @@
 	overflow: hidden;
   }
   
-  .sidebar-overlay {
+  .sidebarOverlay {
 	display: none;
 	position: fixed;
 	top: 0;
@@ -53,7 +53,7 @@
   }
   
   @media (max-width: 768px) {
-	.burger-btn {
+	.burgerBtn {
 	  display: block;
 	}
 	
@@ -66,11 +66,11 @@
 	  transform: translateX(-100%);
 	}
 	
-	.sidebar-open {
+	.sidebarOpen {
 	  transform: translateX(0);
 	}
 	
-	.sidebar-overlay {
+	.sidebarOverlay {
 	  display: block;
 	}
   }

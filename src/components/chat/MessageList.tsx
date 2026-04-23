@@ -1,33 +1,20 @@
-import React from 'react';
-import { Message } from './Message';
-import { ChatMessage } from '../../types';
-import './MessageList.css';
+import React, { lazy, Suspense } from 'react';
+
+const MessageListInner = lazy(() => import('./MessageListInner'));
 
 interface MessageListProps {
-  messages: ChatMessage[];
+  messages: {
+    id: string;
+    role: 'user' | 'assistant' | 'system';
+    content: string;
+    timestamp: number;
+  }[];
 }
 
-export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('ru-RU', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
-
+export const MessageList: React.FC<MessageListProps> = (props) => {
   return (
-    <div className="message-list">
-      {messages.map((msg) => (
-        <Message 
-          key={msg.id} 
-          message={{
-            id: msg.id,
-            text: msg.content,
-            sender: msg.role,
-            time: formatTime(msg.timestamp),
-          }} 
-        />
-      ))}
-    </div>
+    <Suspense fallback={<div className="loading-spinner">Загрузка сообщений...</div>}>
+      <MessageListInner {...props} />
+    </Suspense>
   );
 };

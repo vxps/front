@@ -1,5 +1,5 @@
 import React from 'react';
-import './Slider.css';
+import './Slider.module.css';
 
 interface SliderProps {
   value: number;
